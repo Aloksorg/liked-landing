@@ -66,27 +66,18 @@ CNAME           liked.app — Pages läser den vid varje publicering
 > `https://aloksorg.github.io/liked-landing/`. Fram tills dess pekar `liked.app`
 > fortfarande på Lovable och allt fungerar som förut.
 
-### Förhandsgranskningen fungerar bara innan domänen är satt
+### Så här ser det ut i dag (avläst 2026-08-23)
 
-Så snart `CNAME` finns i repot och Pages har `liked.app` som custom domain omdirigerar
-GitHub `https://aloksorg.github.io/liked-landing/` → `https://liked.app/`. Tills DNS
-pekar hit hamnar man då på appen i Lovable i stället för på den här sidan. Det är väntat
-och inte ett fel — sajten är verifierad på förhandsgranskningsadressen *innan* domänen
-sattes.
+Alla tre namnen pekar på Lovables edge:
 
-Behöver du förhandsgranska igen innan DNS är omlagt, koppla loss domänen tillfälligt:
-
-```bash
-gh api -X PUT /repos/Aloksorg/liked-landing/pages -f cname=""   # frigör github.io-adressen
-gh api -X PUT /repos/Aloksorg/liked-landing/pages -f cname=liked.app   # koppla på igen
+```
+liked.app       A  185.158.133.1
+www.liked.app   A  185.158.133.1
+app.liked.app   A  185.158.133.1
 ```
 
-`CNAME`-filen i repot sätter tillbaka domänen vid nästa publicering, så ta bort filen
-också om frånkopplingen ska överleva en push.
-
-I dag pekar `liked.app` på Lovables edge (`A @ → 185.158.133.1`). Det ska bytas mot
-GitHub Pages fyra A-poster. `app.liked.app` rörs **inte** — den ska fortsätta peka på
-Lovable, annars försvinner appen.
+`liked.app` och `www` ska bytas mot GitHub Pages. **`app.liked.app` rörs inte** — den
+ska fortsätta peka på Lovable, annars försvinner appen.
 
 ### Poster som ska finnas
 
@@ -101,24 +92,45 @@ Lovable, annars försvinner appen.
 ### Poster som ska tas bort
 
 - `A @ → 185.158.133.1` (Lovables edge — ersätts av de fyra ovan)
-- Eventuell `A www` eller `CNAME www` som pekar på Lovable (ersätts av CNAME:t ovan)
+- `A www → 185.158.133.1` (ersätts av CNAME:t ovan; GoDaddy tillåter inte både A och
+  CNAME på samma namn, så A-posten måste bort först)
 
 ### Poster som ska lämnas i fred
 
 - Allt som rör `app.liked.app` — det är appen.
-- `TXT _lovable` — Lovables ägarverifiering för `app.liked.app`.
+- `TXT _lovable` — Lovables ägarverifiering.
 - MX och SPF/DKIM/DMARC — e-posten till `hej@liked.app`.
+
+### Förhandsgranskningen
+
+`https://aloksorg.github.io/liked-landing/` visar sajten även nu, med custom domain satt
+och DNS kvar hos Lovable — GitHub börjar omdirigera den adressen till `liked.app` först
+när domänen är verifierad. Skulle omdirigeringen slå till innan DNS är omlagt hamnar man
+på appen i Lovable i stället; koppla då loss domänen tillfälligt:
+
+```bash
+gh api -X PUT repos/Aloksorg/liked-landing/pages -f cname=""          # frigör github.io
+gh api -X PUT repos/Aloksorg/liked-landing/pages -f cname=liked.app   # koppla på igen
+```
+
+`CNAME`-filen i repot sätter tillbaka domänen vid nästa publicering, så ta bort filen
+också om frånkopplingen ska överleva en push.
 
 ### Efter att posterna är satta
 
 1. Kontrollera att de har spridit sig: `dig +short liked.app` ska svara med de fyra
    `185.199.*`-adresserna.
 2. Slå på HTTPS i Pages när GitHub har hunnit utfärda certifikatet (det tar från några
-   minuter upp till en timme efter att DNS pekar rätt):
+   minuter upp till en timme efter att DNS pekar rätt). Fram till dess svarar
+   anropet `The certificate does not exist yet`:
 
    ```bash
-   gh api -X PUT /repos/Aloksorg/liked-landing/pages -f https_enforced=true
+   gh api -X PUT repos/Aloksorg/liked-landing/pages -F https_enforced=true
    ```
+
+   `-F` och inte `-f` — med `-f` skickas värdet som strängen `"true"` och API:et
+   svarar 422. Och ingen inledande snedstreck i sökvägen: Git Bash på Windows tolkar
+   annars `/repos/...` som en filsökväg.
 
 3. Öppna `https://liked.app/` och kontrollera att landningssidan syns — inte appen.
 4. Kontrollera i Google Search Console att egendomen `https://liked.app/` fortfarande är
