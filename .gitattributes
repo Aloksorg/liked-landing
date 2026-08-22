@@ -1,0 +1,9 @@
+# LF överallt, även på Windows.
+#
+# GitHub Pages serverar filerna precis som de ligger, och läser CNAME som ren text.
+# Med core.autocrlf=true (standard på Windows) hade utcheckningen bytt radsluten mot
+# CRLF, och varje redigering hade sett ut som att hela filen skrivits om.
+* text=auto eol=lf
+
+*.png binary
+*.svg text eol=lf

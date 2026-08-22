@@ -1,0 +1,9 @@
+# https://liked.app — Liked, landningssidan.
+#
+# Sajten består av två sidor och ingenting annat. Själva appen ligger på
+# app.liked.app och har sin egen robots.txt; ingenting här nedan gäller den.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://liked.app/sitemap.xml

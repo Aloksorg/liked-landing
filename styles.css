@@ -1,0 +1,1037 @@
+/*
+ * Liked — landningssidans stilmall.
+ *
+ * Sidan är portad ur appen (src/components/landing-page.tsx) men bor i ett eget repo
+ * och har därför ingen Tailwind, ingen byggkedja och inga beroenden: en fil, läst
+ * direkt av webbläsaren. Färgerna nedan är samma hex som appens designsystem
+ * (src/styles.css, designöverlämningen 2026-06) — cream som duk, djup teal som
+ * primärfärg, korall/mint/amber som accenter.
+ *
+ * Ändras paletten i appen ska den ändras här också; de två filerna är syskon utan
+ * gemensam källa, eftersom en gemensam källa hade krävt just den byggkedja sidan
+ * finns till för att slippa.
+ */
+
+/* ── Designtokens ──────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: #fff8f4; /* cream */
+  --fg: #1f2937;
+  --navy: #1f2937; /* "ink" — rubriker */
+  --muted: #6b7280; /* "ink-soft" — brödtext */
+  --muted-dim: rgba(107, 114, 128, 0.85);
+  --card: #ffffff;
+  --border: #efe7df; /* "line" */
+  --border-soft: rgba(239, 231, 223, 0.6);
+
+  --primary: #0f766e; /* djup teal */
+  --primary-fg: #ffffff;
+  --primary-soft: #d9f4ec; /* mint */
+  --accent: #ffe6e1; /* korall-mjuk */
+  --accent-fg: #e0584a;
+  --orange: #c07a22; /* amber-ton, kickers */
+  --amber-soft: #fcebd4;
+  --coral-line: #f49a8c; /* hjärtana i illustrationspanelerna */
+
+  --hero: linear-gradient(180deg, #eaf7f2, #fff8f4);
+
+  /* Illustrationspanelernas tonade bakgrunder — samma tre som i onboarding. */
+  --panel-1: #fbe9e2;
+  --panel-2: #f8efe6;
+  --panel-3: #fcefdc;
+
+  /* Cirklarna bakom personerna i illustration 1, och presentens toner. */
+  --blob-peach: #fbd9cc;
+  --blob-lilac: #e4e0f4;
+  --blob-mint: #d9f4ec;
+  --gift-box: #0f766e;
+  --gift-band: #d9f4ec;
+
+  --shadow-card: 0 2px 10px rgba(31, 41, 55, 0.06), 0 1px 2px rgba(31, 41, 55, 0.04);
+  --shadow-cta: 0 6px 16px rgba(15, 118, 110, 0.28);
+
+  --font-display: "League Spartan", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, ui-sans-serif,
+    system-ui, sans-serif;
+}
+
+/*
+ * Mörkt läge följer systemet — sidan är statisk och har ingen inställningssida att
+ * spara ett val i, så besökarens OS får bestämma. Tonerna är appens mörka tema
+ * (.dark i src/styles.css) översatta till hex.
+ *
+ * Illustrationspanelerna får egna, dämpade toner i stället för de ljusa pastellerna:
+ * behållna som de är hade tre bjärta ljusfält lyst upp en i övrigt mörk sida.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #17211f;
+    --fg: #f2f1ec;
+    --navy: #f2f1ec;
+    --muted: #a7b2ae;
+    --muted-dim: rgba(167, 178, 174, 0.85);
+    --card: #1e2a27;
+    --border: rgba(255, 255, 255, 0.12);
+    --border-soft: rgba(255, 255, 255, 0.08);
+
+    --primary: #5ecfb1;
+    --primary-fg: #10201c;
+    --primary-soft: #22423a;
+    --accent: #3d3021;
+    --accent-fg: #f6d9b0;
+    --orange: #e0a55c;
+
+    --hero: linear-gradient(180deg, #1b2b27, #17211f);
+
+    --panel-1: #33241f;
+    --panel-2: #2f2721;
+    --panel-3: #33281c;
+
+    --blob-peach: #4a332b;
+    --blob-lilac: #35314a;
+    --blob-mint: #22423a;
+    --gift-box: #14887e;
+    --gift-band: #9fded0;
+    --coral-line: #c47a6e;
+    --amber-soft: #4a3a22;
+
+    --shadow-card: 0 2px 10px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.25);
+    --shadow-cta: 0 6px 16px rgba(94, 207, 177, 0.22);
+  }
+}
+
+/* ── Grund ─────────────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2 {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}
+
+svg {
+  display: block;
+}
+
+.container {
+  max-width: 1024px;
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+/* Synlig fokusring — sidan går att ta sig igenom med enbart tangentbord. */
+a:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 999px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 10;
+  background: var(--card);
+  color: var(--primary);
+  padding: 12px 20px;
+  border-radius: 0 0 12px 0;
+  font-weight: 700;
+}
+
+.skip-link:focus {
+  left: 0;
+}
+
+/* ── Ordmärke ──────────────────────────────────────────────────────────────── */
+
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  color: var(--primary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.wordmark svg {
+  width: 0.8em;
+  height: 0.8em;
+}
+
+/* ── Sidhuvud ──────────────────────────────────────────────────────────────── */
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 16px;
+  padding-inline: 20px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lang-toggle {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.lang-toggle a {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.lang-toggle a[aria-current="true"] {
+  background: var(--primary);
+  color: var(--primary-fg);
+}
+
+/* ── Knappar ───────────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-block;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-fg);
+  box-shadow: var(--shadow-cta);
+  padding: 16px 32px;
+}
+
+.btn-secondary {
+  background: var(--card);
+  color: var(--primary);
+  border: 1.5px solid var(--border);
+  padding: 14.5px 32px;
+}
+
+.btn-sm {
+  display: inline-block;
+  background: var(--card);
+  color: var(--primary);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* ── Hero ──────────────────────────────────────────────────────────────────── */
+
+.hero {
+  background: var(--hero);
+}
+
+.hero-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  padding-top: 32px;
+  padding-bottom: 48px;
+}
+
+.hero-copy {
+  width: 100%;
+  max-width: 32rem;
+  text-align: center;
+}
+
+.hero-copy h1 {
+  color: var(--navy);
+  font-size: 34px;
+  line-height: 1.15;
+  font-weight: 800;
+  white-space: pre-line;
+}
+
+.hero-body {
+  color: var(--muted);
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.hero-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.hero-note {
+  color: var(--muted-dim);
+  margin-top: 14px;
+  font-size: 13px;
+}
+
+.hero-art {
+  width: 100%;
+}
+
+/* ── Telefonbilden ─────────────────────────────────────────────────────────── */
+
+.shot {
+  position: relative;
+  width: 100%;
+  max-width: 290px;
+  margin-inline: auto;
+  padding-bottom: 24px;
+}
+
+.shot-frame {
+  border: 1px solid var(--border);
+  border-radius: 36px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  padding: 10px;
+}
+
+.shot-screen {
+  background: var(--bg);
+  border-radius: 28px;
+  padding: 20px 14px 28px;
+}
+
+.shot-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.shot-head-title {
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.shot-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shot-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  padding: 10px;
+}
+
+.shot-row-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.shot-row-name,
+.shot-row-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shot-row-name {
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.shot-row-meta {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.shot-badge {
+  flex-shrink: 0;
+  background: var(--primary-soft);
+  color: var(--primary);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.shot-idea {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border-radius: 999px;
+  box-shadow: var(--shadow-card);
+  padding: 10px 16px;
+}
+
+.shot-idea-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--orange);
+}
+
+.shot-idea-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.shot-idea-text {
+  color: var(--navy);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ── Avatarer ──────────────────────────────────────────────────────────────── */
+
+/*
+ * Samma deterministiska paletter som appens Avatar-komponent: varje "seed" ger
+ * alltid samma ansikte. Paletten sätts som variabler på svg-elementet, så en enda
+ * uppsättning path-data räcker för alla varianter.
+ */
+.avatar {
+  flex-shrink: 0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.avatar-0 {
+  --av-bg: #fbddd2;
+  --av-skin: #e8a67c;
+  --av-hair: #6b4226;
+  --av-shirt: #0f766e;
+}
+
+.avatar-1 {
+  --av-bg: #d9f4ec;
+  --av-skin: #c68642;
+  --av-hair: #3d2b1f;
+  --av-shirt: #ff7a6b;
+}
+
+.avatar-3 {
+  --av-bg: #e4e0f4;
+  --av-skin: #8d5524;
+  --av-hair: #1f1b16;
+  --av-shirt: #ff7a6b;
+}
+
+/* ── Funktionsavsnitt ──────────────────────────────────────────────────────── */
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  padding-block: 56px;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feature-art,
+.feature-copy {
+  min-width: 0;
+}
+
+.panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 28px;
+  height: 230px;
+}
+
+.panel-1 {
+  background: var(--panel-1);
+}
+
+.panel-2 {
+  background: var(--panel-2);
+}
+
+.panel-3 {
+  background: var(--panel-3);
+}
+
+/* De fem strödda konturhjärtana över varje panel. */
+.panel-heart {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  color: var(--coral-line);
+  opacity: 0.8;
+}
+
+.panel-heart-1 {
+  top: 14px;
+  left: 18px;
+}
+
+.panel-heart-2 {
+  top: 12px;
+  right: 26px;
+}
+
+.panel-heart-3 {
+  top: 64px;
+  right: 14px;
+}
+
+.panel-heart-4 {
+  bottom: 16px;
+  left: 36px;
+}
+
+.panel-heart-5 {
+  bottom: 52px;
+  right: 40px;
+}
+
+.kicker {
+  display: block;
+  color: var(--orange);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.feature-copy h2 {
+  color: var(--navy);
+  margin-top: 6px;
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.feature-copy p {
+  color: var(--muted);
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── Illustration 1: människorna ───────────────────────────────────────────── */
+
+.illo-people {
+  position: relative;
+  width: 200px;
+  height: 160px;
+}
+
+.illo-people .blob {
+  position: absolute;
+  border-radius: 999px;
+}
+
+.illo-people .blob-a {
+  left: 18px;
+  top: 44px;
+  width: 68px;
+  height: 68px;
+  background: var(--blob-peach);
+}
+
+.illo-people .blob-b {
+  right: 20px;
+  top: 44px;
+  width: 64px;
+  height: 64px;
+  background: var(--blob-lilac);
+}
+
+.illo-people .blob-c {
+  left: 60px;
+  top: 22px;
+  width: 80px;
+  height: 80px;
+  background: var(--blob-mint);
+}
+
+.illo-people .person-a {
+  position: absolute;
+  left: 28px;
+  top: 54px;
+}
+
+.illo-people .person-b {
+  position: absolute;
+  right: 28px;
+  top: 52px;
+}
+
+.illo-people .person-c {
+  position: absolute;
+  left: 70px;
+  top: 28px;
+}
+
+.illo-people .gift {
+  position: absolute;
+  left: 72px;
+  top: 100px;
+}
+
+/* ── Illustration 2: påminnelsen ───────────────────────────────────────────── */
+
+.illo-reminder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.calendar {
+  position: relative;
+  width: 140px;
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.calendar-top {
+  position: relative;
+  height: 44px;
+  border-radius: 18px 18px 0 0;
+  background: var(--blob-peach);
+}
+
+.calendar-ring {
+  position: absolute;
+  top: -8px;
+  width: 4px;
+  height: 22px;
+  border-radius: 2px;
+  background: var(--primary);
+}
+
+.calendar-ring-l {
+  left: 32px;
+}
+
+.calendar-ring-r {
+  right: 32px;
+}
+
+.calendar-day {
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.calendar-label {
+  color: var(--muted);
+  padding-bottom: 14px;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+}
+
+.notif {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  padding: 8px 16px;
+  text-align: left;
+}
+
+.notif-dot {
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.notif-title {
+  display: block;
+  color: var(--navy);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.notif-body {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* ── Illustration 3: presenten ─────────────────────────────────────────────── */
+
+.illo-gift {
+  position: relative;
+}
+
+.idea-card {
+  position: absolute;
+  top: -26px;
+  right: -38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  padding: 12px 16px;
+}
+
+.idea-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ── Informationskort (integritet + support) ───────────────────────────────── */
+
+.info-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+}
+
+.info-card + .info-card {
+  margin-top: 20px;
+}
+
+.info-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+}
+
+.info-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.info-icon-teal {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.info-icon-coral {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.info-body {
+  min-width: 0;
+}
+
+.info-card h2 {
+  color: var(--navy);
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.info-card p {
+  color: var(--muted);
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.info-link {
+  display: inline-block;
+  color: var(--primary);
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+  text-underline-offset: 2px;
+  overflow-wrap: anywhere;
+}
+
+.info-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Avslutning ────────────────────────────────────────────────────────────── */
+
+.closing {
+  padding-block: 56px;
+  text-align: center;
+}
+
+.closing h2 {
+  color: var(--navy);
+  font-size: 26px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+
+.closing p {
+  color: var(--muted);
+  max-width: 28rem;
+  margin: 12px auto 0;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.closing .btn-primary {
+  margin-top: 28px;
+  padding-inline: 40px;
+}
+
+/* ── Sidfot ────────────────────────────────────────────────────────────────── */
+
+.site-footer {
+  border-top: 1px solid var(--border-soft);
+}
+
+.footer-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-block: 32px;
+  text-align: center;
+}
+
+.footer-made-by {
+  color: var(--muted-dim);
+  margin-top: 6px;
+  font-size: 12.5px;
+}
+
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 20px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.footer-nav a {
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.footer-nav a:hover {
+  color: var(--primary);
+}
+
+/* ── 404 ───────────────────────────────────────────────────────────────────── */
+
+.fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 56px 24px;
+}
+
+.fallback-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  margin-bottom: 28px;
+  border-radius: 999px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.fallback-badge svg {
+  width: 52px;
+  height: 52px;
+}
+
+.fallback-card {
+  width: 100%;
+  max-width: 24rem;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  padding: 28px;
+  text-align: center;
+}
+
+.fallback-card .wordmark {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.fallback-card h1 {
+  color: var(--navy);
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.fallback-card p {
+  color: var(--muted);
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.fallback-alt {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.fallback-alt p {
+  font-size: 13.5px;
+}
+
+.fallback-card .btn-primary {
+  display: block;
+  margin-top: 24px;
+  padding-inline: 24px;
+}
+
+/* ── Från 640px: knapparna sida vid sida, korten vågräta ───────────────────── */
+
+@media (min-width: 640px) {
+  .hero-actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .info-card {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .footer-inner {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+/* ── Från 768px: två spalter, varannan funktion spegelvänd ─────────────────── */
+
+@media (min-width: 768px) {
+  .hero-inner {
+    flex-direction: row;
+    gap: 48px;
+    padding-top: 56px;
+  }
+
+  .hero-copy {
+    flex: 1;
+    text-align: left;
+  }
+
+  .hero-copy h1 {
+    font-size: 44px;
+  }
+
+  .hero-actions {
+    justify-content: flex-start;
+  }
+
+  .hero-art {
+    flex: 1;
+  }
+
+  .features {
+    gap: 80px;
+  }
+
+  .feature {
+    flex-direction: row;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .feature:nth-of-type(even) {
+    flex-direction: row-reverse;
+  }
+
+  .feature-art,
+  .feature-copy {
+    flex: 1;
+  }
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Bara landningssidans egna adresser. Appens sidor (/login, /villkor, /integritet)
+  ligger på app.liked.app och hör hemma i den deployens sitemap, inte i den här —
+  en sitemap får bara innehålla adresser på samma värd som den själv ligger på.
+
+  lastmod ändras när sidorna faktiskt ändras, inte vid varje publicering.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://liked.app/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://liked.app/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://liked.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://liked.app/"/>
+  </url>
+  <url>
+    <loc>https://liked.app/en/</loc>
+    <lastmod>2026-08-23</lastmod>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="sv" href="https://liked.app/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://liked.app/en/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://liked.app/"/>
+  </url>
+</urlset>

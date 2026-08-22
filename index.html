@@ -1,0 +1,783 @@
+<!doctype html>
+<!--
+  Liked — landningssidan på liked.app (svenska).
+
+  Statisk sida, ingen byggkedja: den här filen och styles.css är hela sajten. Allt
+  som handlar om själva appen — konto, inloggning, villkor, integritet — ligger på
+  app.liked.app. Ingen länk härifrån pekar tillbaka på liked.app/nånting, eftersom
+  det bara är den här sidan som bor här.
+
+  Engelska versionen ligger i en/index.html och är samma markup med översatt text.
+  De två filerna har ingen gemensam källa — ändras den ena måste den andra ändras
+  samtidigt.
+
+  Länkarna till systersidan och till stilmallen är relativa med flit: sajten ska
+  fungera både på https://liked.app/ och på förhandsgranskningen
+  https://aloksorg.github.io/liked-landing/, där allt ligger under en undersökväg.
+-->
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#FFF8F4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17211F" media="(prefers-color-scheme: dark)" />
+
+    <!--
+      Ägarverifiering för Google Search Console. Egendomen https://liked.app/ är redan
+      verifierad med exakt den här taggen (den satt i appens src/routes/__root.tsx när
+      liked.app pekade på appen). Nu är det den här sajten som svarar på adressen, så
+      taggen måste följa med hit — annars tappas verifieringen vid nästa kontroll.
+    -->
+    <meta name="google-site-verification" content="Lhon6hnaoRQULPrVS2j6q814wp-fIXaMvegh_9Yv-M0" />
+
+    <title>Liked — Kom ihåg de du tycker om</title>
+    <meta
+      name="description"
+      content="Personlig app som hjälper dig komma ihåg människor du tycker om och planera omtänksamma presenter."
+    />
+    <link rel="canonical" href="https://liked.app/" />
+    <link rel="alternate" hreflang="sv" href="https://liked.app/" />
+    <link rel="alternate" hreflang="en" href="https://liked.app/en/" />
+    <link rel="alternate" hreflang="x-default" href="https://liked.app/" />
+
+    <meta property="og:site_name" content="Liked" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://liked.app/" />
+    <meta property="og:locale" content="sv_SE" />
+    <meta property="og:locale:alternate" content="en_GB" />
+    <meta property="og:title" content="Liked — Kom ihåg de du tycker om" />
+    <meta
+      property="og:description"
+      content="Kom ihåg de du tycker om och planera omtänksamma presenter."
+    />
+    <meta property="og:image" content="https://liked.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="Liked — appen som påminner dig om de du tycker om"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Liked — Kom ihåg de du tycker om" />
+    <meta
+      name="twitter:description"
+      content="Kom ihåg de du tycker om och planera omtänksamma presenter."
+    />
+    <meta name="twitter:image" content="https://liked.app/og-image.png" />
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon-48.png" type="image/png" sizes="48x48" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!--
+      Strukturerad data: vad sajten är (WebSite) och vad den beskriver (SoftwareApplication).
+      Bara påståenden som är sanna i dag och syns på sidan — påhittade betyg eller
+      erbjudanden är vad som förvandlar ett rikt sökresultat till en manuell åtgärd.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://liked.app/#organization",
+            "name": "Beyond Horizon AB",
+            "url": "https://liked.app/",
+            "email": "hej@liked.app"
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://liked.app/#website",
+            "url": "https://liked.app/",
+            "name": "Liked",
+            "description": "Personlig app som hjälper dig komma ihåg människor du tycker om och planera omtänksamma presenter.",
+            "inLanguage": ["sv-SE", "en-GB"],
+            "publisher": { "@id": "https://liked.app/#organization" }
+          },
+          {
+            "@type": "SoftwareApplication",
+            "@id": "https://liked.app/#app",
+            "name": "Liked",
+            "url": "https://app.liked.app/",
+            "applicationCategory": "LifestyleApplication",
+            "operatingSystem": "Web",
+            "inLanguage": ["sv-SE", "en-GB"],
+            "image": "https://liked.app/og-image.png",
+            "description": "Personlig app som hjälper dig komma ihåg människor du tycker om och planera omtänksamma presenter.",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "SEK"
+            },
+            "publisher": { "@id": "https://liked.app/#organization" }
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#innehall">Hoppa till innehållet</a>
+
+    <header class="site-header container">
+      <span class="wordmark">
+        <svg
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+          />
+        </svg>
+        Liked
+      </span>
+      <div class="header-right">
+        <nav class="lang-toggle" aria-label="Språk">
+          <a href="./" aria-current="true" hreflang="sv" lang="sv">SV</a>
+          <a href="en/" hreflang="en" lang="en">EN</a>
+        </nav>
+        <a class="btn-sm" href="https://app.liked.app/login">Logga in</a>
+      </div>
+    </header>
+
+    <main id="innehall">
+      <!-- Hero — mint→cream-bandet som inloggningen använder, så sidorna hör ihop. -->
+      <div class="hero">
+        <div class="hero-inner container">
+          <div class="hero-copy">
+            <h1>Kom ihåg de
+du tycker om</h1>
+            <p class="hero-body">
+              Liked håller reda på födelsedagar och märkesdagar, påminner dig i god tid och
+              samlar presentidéerna på ett ställe — så att omtanken hinner fram.
+            </p>
+
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="https://app.liked.app/onboarding">Kom igång</a>
+              <a class="btn btn-secondary" href="https://app.liked.app/login"
+                >Jag har redan ett konto</a
+              >
+            </div>
+            <p class="hero-note">Fungerar i webbläsaren. Inget att installera.</p>
+          </div>
+
+          <!--
+            En stiliserad bild av appens Datum-flöde, ritad med samma kort, avatarer och
+            chip som skärmen använder på riktigt — inte en skärmdump som blir gammal vid
+            nästa designändring. Dekorativ: skärmläsare ska inte läsa upp påhittade namn
+            och datum.
+          -->
+          <div class="hero-art">
+            <div class="shot" aria-hidden="true">
+              <div class="shot-frame">
+                <div class="shot-screen">
+                  <div class="shot-head">
+                    <span class="shot-head-title">Kommande</span>
+                    <span class="wordmark" style="font-size: 13px">
+                      <svg
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linejoin="round"
+                      >
+                        <path
+                          d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                        />
+                      </svg>
+                      Liked
+                    </span>
+                  </div>
+                  <div class="shot-rows">
+                    <div class="shot-row">
+                      <svg class="avatar avatar-0" width="38" height="38" viewBox="0 0 48 48">
+                        <circle cx="24" cy="24" r="24" fill="var(--av-bg)" />
+                        <path d="M10 48 a14 14 0 0 1 28 0 Z" fill="var(--av-shirt)" />
+                        <rect x="21.5" y="26" width="5" height="6" rx="2" fill="var(--av-skin)" />
+                        <circle cx="24" cy="18" r="9.5" fill="var(--av-hair)" />
+                        <circle cx="24" cy="21" r="7.5" fill="var(--av-skin)" />
+                        <path
+                          d="M16.5 18.5 a7.5 7.5 0 0 1 15 0 l0 -2 a7.5 9 0 0 0 -15 0 Z"
+                          fill="var(--av-hair)"
+                        />
+                        <circle cx="21.2" cy="20.8" r="1.1" fill="#1F2937" />
+                        <circle cx="26.8" cy="20.8" r="1.1" fill="#1F2937" />
+                        <path
+                          d="M21.5 24 Q24 26.2 26.5 24"
+                          stroke="#1F2937"
+                          stroke-width="1.1"
+                          stroke-linecap="round"
+                          fill="none"
+                        />
+                      </svg>
+                      <div class="shot-row-text">
+                        <p class="shot-row-name">Mamma</p>
+                        <p class="shot-row-meta">Födelsedag · 24 sep</p>
+                      </div>
+                      <span class="shot-badge">om 6 dagar</span>
+                    </div>
+                    <div class="shot-row">
+                      <svg class="avatar avatar-3" width="38" height="38" viewBox="0 0 48 48">
+                        <circle cx="24" cy="24" r="24" fill="var(--av-bg)" />
+                        <path d="M10 48 a14 14 0 0 1 28 0 Z" fill="var(--av-shirt)" />
+                        <rect x="21.5" y="26" width="5" height="6" rx="2" fill="var(--av-skin)" />
+                        <circle cx="24" cy="18" r="9.5" fill="var(--av-hair)" />
+                        <circle cx="24" cy="21" r="7.5" fill="var(--av-skin)" />
+                        <path
+                          d="M16.5 18.5 a7.5 7.5 0 0 1 15 0 l0 -2 a7.5 9 0 0 0 -15 0 Z"
+                          fill="var(--av-hair)"
+                        />
+                        <circle cx="21.2" cy="20.8" r="1.1" fill="#1F2937" />
+                        <circle cx="26.8" cy="20.8" r="1.1" fill="#1F2937" />
+                        <path
+                          d="M21.5 24 Q24 26.2 26.5 24"
+                          stroke="#1F2937"
+                          stroke-width="1.1"
+                          stroke-linecap="round"
+                          fill="none"
+                        />
+                      </svg>
+                      <div class="shot-row-text">
+                        <p class="shot-row-name">Johan</p>
+                        <p class="shot-row-meta">Bröllopsdag · 2 okt</p>
+                      </div>
+                      <span class="shot-badge">om 14 dagar</span>
+                    </div>
+                    <div class="shot-row">
+                      <svg class="avatar avatar-1" width="38" height="38" viewBox="0 0 48 48">
+                        <circle cx="24" cy="24" r="24" fill="var(--av-bg)" />
+                        <path d="M10 48 a14 14 0 0 1 28 0 Z" fill="var(--av-shirt)" />
+                        <rect x="21.5" y="26" width="5" height="6" rx="2" fill="var(--av-skin)" />
+                        <circle cx="24" cy="18" r="9.5" fill="var(--av-hair)" />
+                        <circle cx="24" cy="21" r="7.5" fill="var(--av-skin)" />
+                        <path
+                          d="M16.5 18.5 a7.5 7.5 0 0 1 15 0 l0 -2 a7.5 9 0 0 0 -15 0 Z"
+                          fill="var(--av-hair)"
+                        />
+                        <circle cx="21.2" cy="20.8" r="1.1" fill="#1F2937" />
+                        <circle cx="26.8" cy="20.8" r="1.1" fill="#1F2937" />
+                        <path
+                          d="M21.5 24 Q24 26.2 26.5 24"
+                          stroke="#1F2937"
+                          stroke-width="1.1"
+                          stroke-linecap="round"
+                          fill="none"
+                        />
+                      </svg>
+                      <div class="shot-row-text">
+                        <p class="shot-row-name">Elin</p>
+                        <p class="shot-row-meta">Födelsedag · 11 okt</p>
+                      </div>
+                      <span class="shot-badge">om 23 dagar</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Presentidéerna som ligger och väntar — flyter utanför ramen. -->
+              <div class="shot-idea">
+                <span class="shot-idea-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M12 7v14" />
+                    <path d="M20 11v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8" />
+                    <path d="M7.5 7a1 1 0 0 1 0-5A4.8 8 0 0 1 12 7a4.8 8 0 0 1 4.5-5 1 1 0 0 1 0 5" />
+                    <rect x="3" y="7" width="18" height="4" rx="1" />
+                  </svg>
+                </span>
+                <span class="shot-idea-text">3 presentidéer sparade</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="features">
+          <section class="feature">
+            <div class="feature-art">
+              <div class="panel panel-1">
+                <svg
+                  class="panel-heart panel-heart-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+
+                <!-- Steg 1: tre människor över en tealfärgad presentask. -->
+                <div class="illo-people" aria-hidden="true">
+                  <span class="blob blob-a"></span>
+                  <span class="blob blob-b"></span>
+                  <span class="blob blob-c"></span>
+                  <svg class="avatar avatar-1 person-a" width="52" height="52" viewBox="0 0 48 48">
+                    <circle cx="24" cy="24" r="24" fill="var(--av-bg)" />
+                    <path d="M10 48 a14 14 0 0 1 28 0 Z" fill="var(--av-shirt)" />
+                    <rect x="21.5" y="26" width="5" height="6" rx="2" fill="var(--av-skin)" />
+                    <circle cx="24" cy="18" r="9.5" fill="var(--av-hair)" />
+                    <circle cx="24" cy="21" r="7.5" fill="var(--av-skin)" />
+                    <path
+                      d="M16.5 18.5 a7.5 7.5 0 0 1 15 0 l0 -2 a7.5 9 0 0 0 -15 0 Z"
+                      fill="var(--av-hair)"
+                    />
+                    <circle cx="21.2" cy="20.8" r="1.1" fill="#1F2937" />
+                    <circle cx="26.8" cy="20.8" r="1.1" fill="#1F2937" />
+                    <path
+                      d="M21.5 24 Q24 26.2 26.5 24"
+                      stroke="#1F2937"
+                      stroke-width="1.1"
+                      stroke-linecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                  <svg class="avatar avatar-3 person-b" width="48" height="48" viewBox="0 0 48 48">
+                    <circle cx="24" cy="24" r="24" fill="var(--av-bg)" />
+                    <path d="M10 48 a14 14 0 0 1 28 0 Z" fill="var(--av-shirt)" />
+                    <rect x="21.5" y="26" width="5" height="6" rx="2" fill="var(--av-skin)" />
+                    <circle cx="24" cy="18" r="9.5" fill="var(--av-hair)" />
+                    <circle cx="24" cy="21" r="7.5" fill="var(--av-skin)" />
+                    <path
+                      d="M16.5 18.5 a7.5 7.5 0 0 1 15 0 l0 -2 a7.5 9 0 0 0 -15 0 Z"
+                      fill="var(--av-hair)"
+                    />
+                    <circle cx="21.2" cy="20.8" r="1.1" fill="#1F2937" />
+                    <circle cx="26.8" cy="20.8" r="1.1" fill="#1F2937" />
+                    <path
+                      d="M21.5 24 Q24 26.2 26.5 24"
+                      stroke="#1F2937"
+                      stroke-width="1.1"
+                      stroke-linecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                  <svg class="avatar avatar-0 person-c" width="62" height="62" viewBox="0 0 48 48">
+                    <circle cx="24" cy="24" r="24" fill="var(--av-bg)" />
+                    <path d="M10 48 a14 14 0 0 1 28 0 Z" fill="var(--av-shirt)" />
+                    <rect x="21.5" y="26" width="5" height="6" rx="2" fill="var(--av-skin)" />
+                    <circle cx="24" cy="18" r="9.5" fill="var(--av-hair)" />
+                    <circle cx="24" cy="21" r="7.5" fill="var(--av-skin)" />
+                    <path
+                      d="M16.5 18.5 a7.5 7.5 0 0 1 15 0 l0 -2 a7.5 9 0 0 0 -15 0 Z"
+                      fill="var(--av-hair)"
+                    />
+                    <circle cx="21.2" cy="20.8" r="1.1" fill="#1F2937" />
+                    <circle cx="26.8" cy="20.8" r="1.1" fill="#1F2937" />
+                    <path
+                      d="M21.5 24 Q24 26.2 26.5 24"
+                      stroke="#1F2937"
+                      stroke-width="1.1"
+                      stroke-linecap="round"
+                      fill="none"
+                    />
+                  </svg>
+                  <svg class="gift" width="56" height="44" viewBox="0 0 56 44">
+                    <rect width="56" height="44" rx="8" fill="var(--gift-box)" />
+                    <rect y="16" width="56" height="7" fill="var(--gift-band)" />
+                    <rect x="24" width="7" height="44" fill="var(--gift-band)" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="feature-copy">
+              <span class="kicker">Kom ihåg</span>
+              <h2>Samla alla på ett ställe</h2>
+              <p>
+                Lägg till familj, vänner och kollegor med födelsedag, relation och det du vill
+                minnas till nästa gång. Importera direkt från telefonens kontakter.
+              </p>
+            </div>
+          </section>
+
+          <section class="feature">
+            <div class="feature-art">
+              <div class="panel panel-2">
+                <svg
+                  class="panel-heart panel-heart-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+
+                <!-- Steg 2: avrivningskalender + notisplupp. -->
+                <div class="illo-reminder" aria-hidden="true">
+                  <div class="calendar">
+                    <div class="calendar-top">
+                      <span class="calendar-ring calendar-ring-l"></span>
+                      <span class="calendar-ring calendar-ring-r"></span>
+                    </div>
+                    <div class="calendar-day">24</div>
+                    <div class="calendar-label">FÖDELSEDAG</div>
+                  </div>
+                  <div class="notif">
+                    <span class="notif-dot"></span>
+                    <span>
+                      <span class="notif-title">Påminnelse i tid</span>
+                      <span class="notif-body">Mammas födelsedag närmar sig</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="feature-copy">
+              <span class="kicker">I tid</span>
+              <h2>Påminnelser i god tid</h2>
+              <p>
+                Liked mejlar dig innan dagen är inne — inte samma morgon. Du hinner tänka efter,
+                beställa i tid och skriva något eget.
+              </p>
+            </div>
+          </section>
+
+          <section class="feature">
+            <div class="feature-art">
+              <div class="panel panel-3">
+                <svg
+                  class="panel-heart panel-heart-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-2"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-3"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+                <svg
+                  class="panel-heart panel-heart-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+                  />
+                </svg>
+
+                <!-- Steg 3: den stora presenten med rosett + ett svävande idékort. -->
+                <div class="illo-gift" aria-hidden="true">
+                  <svg width="170" height="150" viewBox="0 0 170 150">
+                    <rect x="32" y="58" width="106" height="80" rx="16" fill="var(--gift-box)" />
+                    <rect x="32" y="88" width="106" height="14" fill="var(--gift-band)" />
+                    <rect x="78" y="58" width="14" height="80" fill="var(--gift-band)" />
+                    <path
+                      d="M85 56 q-22-34-34-18t34 18z M85 56 q22-34 34-18t-34 18z"
+                      fill="none"
+                      stroke="var(--gift-box)"
+                      stroke-width="9"
+                    />
+                  </svg>
+                  <div class="idea-card">
+                    <svg width="34" height="34" viewBox="0 0 34 34">
+                      <circle cx="17" cy="17" r="7" fill="#F7B267" />
+                      <g stroke="#F7B267" stroke-width="2.5" stroke-linecap="round">
+                        <line x1="27" y1="17" x2="31" y2="17" />
+                        <line x1="24.07" y1="24.07" x2="26.9" y2="26.9" />
+                        <line x1="17" y1="27" x2="17" y2="31" />
+                        <line x1="9.93" y1="24.07" x2="7.1" y2="26.9" />
+                        <line x1="7" y1="17" x2="3" y2="17" />
+                        <line x1="9.93" y1="9.93" x2="7.1" y2="7.1" />
+                        <line x1="17" y1="7" x2="17" y2="3" />
+                        <line x1="24.07" y1="9.93" x2="26.9" y2="7.1" />
+                      </g>
+                    </svg>
+                    <span class="idea-label">idé</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="feature-copy">
+              <span class="kicker">Present</span>
+              <h2>Skicka en present direkt</h2>
+              <p>
+                Spara idéer och länkar under året. När dagen närmar sig kan du skicka ett
+                presentkort på minuten — direkt från påminnelsen.
+              </p>
+            </div>
+          </section>
+        </div>
+
+        <section class="info-card">
+          <span class="info-icon info-icon-teal">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"
+              />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+          </span>
+          <div class="info-body">
+            <h2>Dina uppgifter stannar i EU</h2>
+            <p>
+              Kontakterna du sparar lagras i Frankfurt, inom EU/EES. Inga reklamkakor, ingen
+              profilering, och uppgifterna säljs aldrig vidare eller används för att träna
+              AI-modeller.
+            </p>
+            <a class="info-link" href="https://app.liked.app/integritet">Integritetspolicy</a>
+          </div>
+        </section>
+
+        <!-- Supportkanalen — en adress, läst av en människa, synlig utan att man loggar in. -->
+        <section class="info-card">
+          <span class="info-icon info-icon-coral">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+            </svg>
+          </span>
+          <div class="info-body">
+            <h2>Frågor? Hör av dig.</h2>
+            <p>
+              Skriv till oss så svarar en människa. Samma adress gäller för dataskydd, ångerrätt
+              och reklamationer.
+            </p>
+            <a class="info-link" href="mailto:hej@liked.app">hej@liked.app</a>
+          </div>
+        </section>
+
+        <section class="closing">
+          <h2>Börja med en person du tycker om</h2>
+          <p>Det tar en minut. Lägg till någon, sätt datumet, och låt Liked komma ihåg.</p>
+          <a class="btn btn-primary" href="https://app.liked.app/onboarding">Kom igång</a>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner container">
+        <div>
+          <span class="wordmark" style="font-size: 18px">
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+              />
+            </svg>
+            Liked
+          </span>
+          <p class="footer-made-by">Liked drivs av Beyond Horizon AB</p>
+        </div>
+        <nav class="footer-nav">
+          <a href="https://app.liked.app/villkor">Användarvillkor</a>
+          <a href="https://app.liked.app/integritet">Integritetspolicy</a>
+          <a href="mailto:hej@liked.app">hej@liked.app</a>
+        </nav>
+      </div>
+    </footer>
+  </body>
+</html>

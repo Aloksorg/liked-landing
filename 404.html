@@ -1,0 +1,107 @@
+<!doctype html>
+<!--
+  Liked — 404.
+
+  GitHub Pages serverar den här filen för varje adress som inte finns, oavsett djup:
+  /nonsens, /en/nonsens, /a/b/c. Därför kan varken stilmallen eller startlänken skrivas
+  som en vanlig relativ sökväg — de skulle peka fel så fort adressen ligger mer än en
+  nivå ner. Skriptet nedan räknar i stället ut sajtens rot en gång och sätter båda:
+  "/" på liked.app, "/liked-landing/" på förhandsgranskningen hos github.io.
+
+  Skriptet ligger i <head> och lägger till länken synkront, så sidan renderas aldrig
+  ostilad. Utan JavaScript gäller <noscript>-varianten, som är rätt på liked.app.
+
+  Tvåspråkig med flit: en besökare som landar på en trasig länk har inte valt språk än.
+-->
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#FFF8F4" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#17211F" media="(prefers-color-scheme: dark)" />
+    <title>Sidan finns inte — Liked</title>
+    <meta name="robots" content="noindex" />
+
+    <script>
+      (function () {
+        var seg = location.pathname.split("/")[1];
+        var base = location.hostname.indexOf(".github.io") !== -1 && seg ? "/" + seg + "/" : "/";
+        window.__likedBase = base;
+        var css = document.createElement("link");
+        css.rel = "stylesheet";
+        css.href = base + "styles.css";
+        document.head.appendChild(css);
+        var icon = document.createElement("link");
+        icon.rel = "icon";
+        icon.type = "image/svg+xml";
+        icon.href = base + "favicon.svg";
+        document.head.appendChild(icon);
+      })();
+    </script>
+    <noscript>
+      <link rel="stylesheet" href="/styles.css" />
+      <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    </noscript>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700;800&display=swap"
+    />
+  </head>
+
+  <body>
+    <!-- Samma cream/teal-skal som appens egen 404, så sidan känns som Liked. -->
+    <main class="fallback">
+      <div class="fallback-badge">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+          />
+        </svg>
+      </div>
+
+      <div class="fallback-card">
+        <span class="wordmark">
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"
+            />
+          </svg>
+          Liked
+        </span>
+        <h1>Sidan finns inte</h1>
+        <p>Länken kan vara gammal eller felstavad. Gå tillbaka till start så hittar du rätt igen.</p>
+
+        <div class="fallback-alt" lang="en">
+          <p>
+            <strong>Page not found.</strong> The link may be old or mistyped. Head back to the
+            start to find your way again.
+          </p>
+        </div>
+
+        <a class="btn btn-primary" id="home-link" href="/">Till start · Go to start</a>
+      </div>
+    </main>
+
+    <script>
+      document.getElementById("home-link").setAttribute("href", window.__likedBase || "/");
+    </script>
+  </body>
+</html>
