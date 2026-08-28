@@ -33,6 +33,7 @@ index.html      svenska landningssidan   → https://liked.app/
 en/index.html   engelska landningssidan  → https://liked.app/en/
 404.html        serveras för alla adresser som inte finns
 styles.css      hela designsystemet, en fil
+analytics.js    cookieless PostHog: sidvisningar och klick till appen, inga formulärdata
 og-image.png    delningsbilden, 1200×630 (kopierad från appens public/)
 favicon.svg, favicon-48.png, apple-touch-icon.png
 robots.txt      öppen för alla crawlers
@@ -56,6 +57,9 @@ CNAME           liked.app — Pages läser den vid varje publicering
 - **`google-site-verification`-taggen i `index.html` ska ligga kvar.** Egendomen
   `https://liked.app/` är verifierad i Google Search Console med exakt den taggen. Tas
   den bort tappas verifieringen vid nästa kontroll.
+- **Analysen är avsiktligt smal.** `analytics.js` använder PostHogs EU-endpoint i
+  cookieless-läge. Automatisk klickspårning, sessionsinspelning, värmekartor och
+  felinsamling är avstängda; bara sidvisningar och länkklick till `app.liked.app` skickas.
 - **Ingen build, ingen preview-server.** Öppna filen i en webbläsare, eller kör
   `python -m http.server` i repotroten.
 
